@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Parallel Processing Strategy</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #0f172a;
+        color: #ffffff;
+      }
+      .slide-container {
+        width: 1280px;
+        height: 720px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #0f172a;
+      }
+
+      /* Background Pattern */
+      .bg-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(#1e293b 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.3;
+        z-index: 0;
+      }
+
+      .header {
+        padding: 30px 60px 10px 60px;
+        z-index: 10;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        padding: 20px 60px 50px 60px;
+        z-index: 10;
+        gap: 40px;
+      }
+
+      /* Common Card Styles */
+      .strategy-card {
+        flex: 1;
+        background-color: #1e293b;
+        border-radius: 16px;
+        border: 1px solid #334155;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Left Card: Resize */
+      .card-resize {
+        border-top: 6px solid #f59e0b; /* Amber */
+      }
+
+      /* Right Card: Create AI */
+      .card-ai {
+        border-top: 6px solid #8b5cf6; /* Violet */
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .card-title {
+        font-size: 24px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .metaphor-box {
+        background-color: rgba(15, 23, 42, 0.6);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-left: 4px solid #475569;
+      }
+
+      .chef-icon {
+        width: 40px;
+        height: 40px;
+        background-color: #334155;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      /* Resize Grid Visualization */
+      .grid-vis-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #0f172a;
+        border-radius: 12px;
+        padding: 20px;
+        position: relative;
+      }
+
+      .image-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 10px;
+        width: 100%;
+        height: 160px;
+      }
+
+      .grid-item {
+        background-color: #334155;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        font-size: 14px;
+        position: relative;
+        border: 1px dashed #475569;
+      }
+
+      .grid-item.active {
+        background-color: rgba(245, 158, 11, 0.2);
+        border: 1px solid #f59e0b;
+        color: #f59e0b;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+      }
+
+      .parallel-arrow {
+        position: absolute;
+        left: -10px;
+        top: 50%;
+        transform: translateY(-50%) translateX(-100%);
+        color: #f59e0b;
+        font-size: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+      }
+
+      /* AI Flow Visualization */
+      .flow-vis-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #0f172a;
+        border-radius: 12px;
+        padding: 20px;
+        gap: 15px;
+      }
+
+      .flow-step {
+        display: flex;
+        align-items: center;
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 10px 15px;
+        gap: 15px;
+        position: relative;
+      }
+
+      .flow-step::before {
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: 20px;
+        width: 2px;
+        height: 15px;
+        background-color: #475569;
+        z-index: 0;
+      }
+
+      .flow-step:first-child::before {
+        display: none;
+      }
+
+      .step-num {
+        width: 24px;
+        height: 24px;
+        background-color: #475569;
+        border-radius: 50%;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+      }
+
+      .step-content {
+        flex: 1;
+      }
+
+      .step-model-tag {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background-color: #3b82f6;
+        color: white;
+        margin-left: 8px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .model-flux {
+        background-color: #ec4899;
+      } /* Pink */
+      .model-gemini {
+        background-color: #3b82f6;
+      } /* Blue */
+
+      /* Badges */
+      .highlight-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .badge-speed {
+        background-color: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid #f59e0b;
+      }
+
+      .badge-quality {
+        background-color: rgba(139, 92, 246, 0.15);
+        color: #8b5cf6;
+        border: 1px solid #8b5cf6;
+      }
+
+      /* Bottom stats */
+      .stat-footer {
+        margin-top: auto;
+        padding-top: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #94a3b8;
+        font-size: 14px;
+      }
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: 800;
+        color: white;
+      }
+
+      .highlight-text-amber {
+        color: #f59e0b;
+      }
+      .highlight-text-violet {
+        color: #a78bfa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <div class="bg-pattern"></div>
+      <!-- Header -->
+      <div class="header">
+        <div class="flex items-center mb-2">
+          <div class="h-1 w-10 bg-blue-400 mr-3"></div>
+          <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Parallel Processing Strategy</p>
+        </div>
+        <h1 class="text-4xl font-black text-white">왜 빠를까? <span class="text-blue-400">병렬 처리 전략</span></h1>
+        <p class="text-gray-400 mt-2 text-lg">작업 유형(Job Type)에 따른 최적화된 처리 방식</p>
+      </div>
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Left Panel: Resize -->
+        <div class="strategy-card card-resize">
+          <div class="highlight-badge badge-speed"><i class="fas fa-bolt mr-1"></i> Speed Focused</div>
+          <div class="card-header">
+            <div class="card-title text-amber-500"><i class="fas fa-compress-arrows-alt"></i> Resize 작업</div>
+          </div>
+          <!-- Metaphor -->
+          <div class="metaphor-box">
+            <div class="chef-icon text-amber-500">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 font-bold uppercase">요리사 비유</p>
+              <p class="text-white text-sm"><span class="text-amber-400 font-bold">10명의 보조 요리사</span>가<br />재료를 동시에 다듬는 것과 같음</p>
+            </div>
+          </div>
+          <!-- Visualization -->
+          <div class="grid-vis-container">
+            <div class="absolute top-2 left-4 text-xs text-gray-500 font-mono mb-2">Multi-Threading Execution</div>
+            <div class="parallel-arrow">
+              <i class="fas fa-long-arrow-alt-right"></i>
+            </div>
+            <div class="image-grid">
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+              <div class="grid-item active"><i class="fas fa-image"></i></div>
+            </div>
+          </div>
+          <!-- Footer Stats -->
+          <div class="stat-footer">
+            <span>동시 처리 용량</span>
+            <span class="stat-value text-amber-500">Max 10 images</span>
+          </div>
+        </div>
+        <!-- Right Panel: Create AI -->
+        <div class="strategy-card card-ai">
+          <div class="highlight-badge badge-quality"><i class="fas fa-star mr-1"></i> Quality Focused</div>
+          <div class="card-header">
+            <div class="card-title text-violet-500"><i class="fas fa-wand-magic-sparkles"></i> Create AI 작업</div>
+          </div>
+          <!-- Metaphor -->
+          <div class="metaphor-box">
+            <div class="chef-icon text-violet-500">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 font-bold uppercase">요리사 비유</p>
+              <p class="text-white text-sm"><span class="text-violet-400 font-bold">전채 → 메인 → 디저트</span> 순서로<br />전문 셰프가 차례대로 요리</p>
+            </div>
+          </div>
+          <!-- Visualization -->
+          <div class="flow-vis-container">
+            <div class="absolute top-4 left-4 text-xs text-gray-500 font-mono">Sequential Processing Pipeline</div>
+            <!-- Step 1 -->
+            <div class="flow-step">
+              <div class="step-num bg-pink-600">1</div>
+              <div class="step-content">
+                <div class="flex items-center">
+                  <span class="text-white font-bold text-sm">Front (다림질)</span>
+                  <span class="step-model-tag model-flux">Flux AI</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">기본 형태 잡기</p>
+              </div>
+              <i class="fas fa-check-circle text-gray-600"></i>
+            </div>
+            <!-- Step 2 -->
+            <div class="flow-step">
+              <div class="step-num bg-blue-600">2</div>
+              <div class="step-content">
+                <div class="flex items-center">
+                  <span class="text-white font-bold text-sm">Model 1 (착용)</span>
+                  <span class="step-model-tag model-gemini">Gemini</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">모델 A 스타일 적용</p>
+              </div>
+              <i class="fas fa-spinner text-violet-500 fa-spin"></i>
+            </div>
+            <!-- Step 3 -->
+            <div class="flow-step opacity-50">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="flex items-center">
+                  <span class="text-white font-bold text-sm">Model 2 (착용)</span>
+                  <span class="step-model-tag model-gemini">Gemini</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">모델 B 스타일 적용</p>
+              </div>
+              <i class="fas fa-clock text-gray-600"></i>
+            </div>
+          </div>
+          <!-- Footer Stats -->
+          <div class="stat-footer">
+            <span>처리 방식</span>
+            <span class="stat-value text-violet-400">Sequential Flow</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.body.addEventListener('click', () => {
+        window.location.href = '8.html';
+      });
+    </script>
+  </body>
+</html>

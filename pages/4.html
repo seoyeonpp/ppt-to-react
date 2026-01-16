@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Compare Queue vs Stack</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #0f172a;
+        color: #ffffff;
+      }
+      .slide-container {
+        width: 1280px;
+        height: 720px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #0f172a;
+      }
+
+      /* Background Grid */
+      .bg-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0.1;
+        z-index: 0;
+      }
+
+      .header {
+        padding: 30px 60px 10px 60px;
+        z-index: 10;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        padding: 20px 60px 40px 60px;
+        z-index: 10;
+        gap: 40px;
+      }
+
+      /* Column Styles */
+      .col-panel {
+        flex: 1;
+        background-color: #1e293b;
+        border-radius: 16px;
+        border: 1px solid #334155;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+
+      .col-panel.queue {
+        border-top: 6px solid #38bdf8; /* Sky Blue */
+        box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.15);
+      }
+
+      .col-panel.stack {
+        border-top: 6px solid #a855f7; /* Purple */
+        opacity: 0.8; /* Make it slightly less prominent */
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+      }
+
+      .panel-title {
+        font-size: 28px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .tag-badge {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+      }
+
+      .badge-system {
+        background-color: #0c4a6e;
+        color: #38bdf8;
+        border: 1px solid #0284c7;
+      }
+
+      .badge-ref {
+        background-color: #3b0764;
+        color: #d8b4fe;
+        border: 1px solid #7e22ce;
+      }
+
+      /* Diagrams */
+      .diagram-box {
+        background-color: #0f172a;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      /* Queue Diagram */
+      .queue-track {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        position: relative;
+      }
+
+      .queue-track::before {
+        content: 'IN';
+        position: absolute;
+        left: -40px;
+        font-size: 12px;
+        color: #64748b;
+        font-weight: bold;
+      }
+
+      .queue-track::after {
+        content: 'OUT';
+        position: absolute;
+        right: -45px;
+        font-size: 12px;
+        color: #64748b;
+        font-weight: bold;
+      }
+
+      .q-item {
+        width: 45px;
+        height: 45px;
+        background-color: #38bdf8;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0f172a;
+        font-weight: bold;
+        font-size: 18px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      }
+
+      .q-item:nth-child(1) {
+        opacity: 1;
+      }
+      .q-item:nth-child(2) {
+        opacity: 0.7;
+      }
+      .q-item:nth-child(3) {
+        opacity: 0.4;
+      }
+
+      .arrow-line {
+        height: 2px;
+        width: 100%;
+        background-color: #334155;
+        position: absolute;
+        top: 50%;
+        z-index: 0;
+      }
+
+      /* Stack Diagram */
+      .stack-container {
+        width: 80px;
+        height: 120px;
+        border-left: 4px solid #475569;
+        border-right: 4px solid #475569;
+        border-bottom: 4px solid #475569;
+        border-radius: 0 0 8px 8px;
+        display: flex;
+        flex-direction: column-reverse; /* Bottom up */
+        align-items: center;
+        padding-bottom: 5px;
+        gap: 5px;
+        position: relative;
+      }
+
+      .s-item {
+        width: 60px;
+        height: 25px;
+        background-color: #a855f7;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .s-item.new {
+        background-color: #d8b4fe;
+        color: #3b0764;
+        transform: translateY(-20px); /* Simulating incoming */
+        position: absolute;
+        top: -30px;
+      }
+
+      /* Analogy Section */
+      .analogy-box {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .analogy-icon {
+        font-size: 30px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      .queue .analogy-icon {
+        background-color: rgba(56, 189, 248, 0.2);
+        color: #38bdf8;
+      }
+      .stack .analogy-icon {
+        background-color: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+      }
+
+      /* Key Point List */
+      .point-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .point-list li {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: start;
+        color: #cbd5e1;
+        font-size: 16px;
+      }
+
+      .point-list li i {
+        margin-top: 5px;
+        margin-right: 10px;
+        font-size: 14px;
+      }
+
+      .queue li i {
+        color: #38bdf8;
+      }
+      .stack li i {
+        color: #a855f7;
+      }
+
+      /* Bottom Conclusion */
+      .bottom-conclusion {
+        visibility: hidden;
+        opacity: 0;
+        transition: ease-in-out 2s;
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        background-color: #0f172a;
+        border: 1px solid #38bdf8;
+        padding: 10px 30px;
+        border-radius: 50px;
+        color: #38bdf8;
+        font-weight: bold;
+        z-index: 20;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        white-space: nowrap;
+      }
+      .bottom-conclusion.show {
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <div class="bg-grid"></div>
+      <!-- Header -->
+      <div class="header">
+        <div class="flex items-center mb-2">
+          <div class="h-1 w-10 bg-blue-400 mr-3"></div>
+          <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Data Structures 101</p>
+        </div>
+        <h1 class="text-4xl font-black text-white">큐(Queue) <span class="text-gray-500 text-3xl font-light mx-2">vs</span> 스택(Stack)</h1>
+        <p class="text-gray-400 mt-2 text-lg">왜 우리 시스템은 '큐' 방식을 사용할까요?</p>
+      </div>
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Left Panel: Queue -->
+        <div class="col-panel queue">
+          <div class="panel-header">
+            <div class="panel-title text-blue-400"><i class="fas fa-list-ol"></i> Queue</div>
+            <span class="tag-badge badge-system"><i class="fas fa-check mr-1"></i>System Choice</span>
+          </div>
+          <!-- Analogy -->
+          <div class="analogy-box">
+            <div class="analogy-icon">
+              <i class="fas fa-people-line"></i>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400 font-bold uppercase">일상 속 비유</p>
+              <p class="text-lg font-bold text-white">은행 번호표 / 줄서기</p>
+            </div>
+          </div>
+          <!-- Diagram -->
+          <div class="diagram-box">
+            <p class="absolute top-2 left-4 text-xs text-gray-500 font-mono">FIFO (First-In First-Out)</p>
+            <div class="arrow-line"></div>
+            <div class="queue-track">
+              <div class="q-item">1</div>
+              <div class="q-item">2</div>
+              <div class="q-item">3</div>
+              <div class="q-item" style="background-color: transparent; border: 2px dashed #334155; color: #64748b">4</div>
+            </div>
+            <div class="mt-4 text-center">
+              <p class="text-sm text-blue-300">먼저 온 작업이 먼저 처리됨</p>
+            </div>
+          </div>
+          <!-- Points -->
+          <ul class="point-list">
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <p><strong>선입선출 (FIFO):</strong><br />순서가 보장되어 예측 가능합니다.</p>
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <p><strong>공정성:</strong><br />먼저 요청한 사용자가 먼저 결과를 받습니다.</p>
+            </li>
+          </ul>
+        </div>
+        <!-- Right Panel: Stack -->
+        <div class="col-panel stack">
+          <div class="panel-header">
+            <div class="panel-title text-purple-400"><i class="fas fa-layer-group"></i> Stack</div>
+            <span class="tag-badge badge-ref">참고용 (Reference)</span>
+          </div>
+          <!-- Analogy -->
+          <div class="analogy-box">
+            <div class="analogy-icon">
+              <i class="fas fa-plates"></i>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400 font-bold uppercase">일상 속 비유</p>
+              <p class="text-lg font-bold text-white">접시 쌓기 / 엘리베이터</p>
+            </div>
+          </div>
+          <!-- Diagram -->
+          <div class="diagram-box">
+            <p class="absolute top-2 left-4 text-xs text-gray-500 font-mono">LIFO (Last-In First-Out)</p>
+            <div class="stack-container">
+              <div class="s-item">Data 1</div>
+              <div class="s-item">Data 2</div>
+              <div class="s-item new">Data 3</div>
+            </div>
+            <div class="mt-4 text-center">
+              <p class="text-sm text-purple-300">마지막에 넣은 것이 먼저 나옴</p>
+            </div>
+          </div>
+          <!-- Points -->
+          <ul class="point-list">
+            <li>
+              <i class="fas fa-arrow-circle-left"></i>
+              <p><strong>후입선출 (LIFO):</strong><br />나중에 들어온 요청이 새치기하는 셈입니다.</p>
+            </li>
+            <li>
+              <i class="fas fa-exclamation-triangle"></i>
+              <p><strong>부적합:</strong><br />먼저 요청한 작업이 무기한 대기할 수 있습니다.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Conclusion Bubble -->
+      <div class="bottom-conclusion"><i class="fas fa-lightbulb mr-2"></i> 결론: 이미지 처리 순서를 보장하기 위해 '큐(Queue)'를 사용합니다.</div>
+    </div>
+    <script>
+      let click = 0
+      document.body.addEventListener('click', () => {
+        click++
+        document.querySelector('.bottom-conclusion').classList.add('show')
+
+        if (click === 2 && document.querySelector('.bottom-conclusion').classList.contains('show')) {
+          window.location.href = '5.html'
+        }
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Cloud Storage and Response</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #0f172a;
+        color: #ffffff;
+      }
+      .slide-container {
+        width: 1280px;
+        height: 720px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #0f172a;
+      }
+
+      /* Simple Background Pattern (No Gradients) */
+      .bg-dots {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231e293b' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+        z-index: 0;
+      }
+
+      .header {
+        padding: 30px 60px 10px 60px;
+        z-index: 10;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 60px 50px 60px;
+        z-index: 10;
+        justify-content: center;
+      }
+
+      /* Process Flow Container */
+      .process-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: rgba(30, 41, 59, 0.5);
+        border: 1px solid #334155;
+        border-radius: 20px;
+        padding: 40px;
+        position: relative;
+      }
+
+      /* Zone 1: Source Images */
+      .source-zone {
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+
+      .image-stack {
+        position: relative;
+        width: 120px;
+        height: 140px;
+      }
+
+      .img-card {
+        width: 100px;
+        height: 120px;
+        background-color: #334155;
+        border: 2px solid #475569;
+        border-radius: 8px;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+      }
+
+      .img-card:nth-child(1) {
+        top: 0;
+        left: 0;
+        z-index: 3;
+        background-color: #475569;
+      }
+      .img-card:nth-child(2) {
+        top: 10px;
+        left: 10px;
+        z-index: 2;
+        opacity: 0.8;
+      }
+      .img-card:nth-child(3) {
+        top: 20px;
+        left: 20px;
+        z-index: 1;
+        opacity: 0.6;
+      }
+
+      .zone-label {
+        margin-top: 20px;
+        font-weight: bold;
+        color: #94a3b8;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      /* Zone 2: Parallel Upload Pipeline */
+      .pipeline-zone {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 40px;
+        position: relative;
+      }
+
+      .upload-paths {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .path-line {
+        height: 2px;
+        background-color: #334155;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .moving-packet {
+        position: absolute;
+        width: 40px;
+        height: 4px;
+        background-color: #38bdf8;
+        top: -1px;
+        border-radius: 2px;
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+        animation: packet-move 1.5s infinite linear;
+      }
+
+      .path-line:nth-child(2) .moving-packet {
+        animation-delay: 0.2s;
+        background-color: #f59e0b;
+        box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+      }
+      .path-line:nth-child(3) .moving-packet {
+        animation-delay: 0.4s;
+      }
+      .path-line:nth-child(4) .moving-packet {
+        animation-delay: 0.1s;
+        background-color: #f59e0b;
+      }
+      .path-line:nth-child(5) .moving-packet {
+        animation-delay: 0.5s;
+      }
+
+      @keyframes packet-move {
+        0% {
+          left: -10%;
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          left: 110%;
+          opacity: 0;
+        }
+      }
+
+      .concurrent-badge {
+        background-color: #0f172a;
+        color: #38bdf8;
+        border: 1px solid #38bdf8;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 5;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+      }
+
+      /* Zone 3: S3 Bucket */
+      .storage-zone {
+        width: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .bucket-icon {
+        width: 100px;
+        height: 120px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        color: #f97316; /* Orange-500 */
+        filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.3));
+      }
+
+      .bucket-label {
+        font-family: 'Courier New', monospace;
+        color: #fb923c;
+        background-color: rgba(249, 115, 22, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-top: 10px;
+        border: 1px dashed #f97316;
+      }
+
+      /* Connector Arrow */
+      .connector-arrow {
+        font-size: 24px;
+        color: #64748b;
+        margin: 0 20px;
+      }
+
+      /* Zone 4: Response */
+      .response-zone {
+        width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .response-card {
+        background-color: #1e293b;
+        border-radius: 12px;
+        padding: 15px;
+        position: relative;
+        border-left: 4px solid;
+      }
+
+      .response-card.success {
+        border-color: #10b981;
+        background-color: rgba(16, 185, 129, 0.05);
+      }
+
+      .response-card.fail {
+        border-color: #ef4444;
+        background-color: rgba(239, 68, 68, 0.05);
+      }
+
+      .res-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .res-title {
+        font-weight: bold;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .code-block {
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        color: #cbd5e1;
+        background-color: #0f172a;
+        padding: 10px;
+        border-radius: 6px;
+        line-height: 1.4;
+      }
+
+      .success-text {
+        color: #34d399;
+      }
+      .error-text {
+        color: #f87171;
+      }
+      .key-text {
+        color: #94a3b8;
+      }
+      .string-text {
+        color: #a5b4fc;
+      }
+
+      /* Info Footer */
+      .info-footer {
+        display: flex;
+        gap: 40px;
+        margin-top: 40px;
+        justify-content: center;
+        padding: 0 40px;
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background-color: #1e293b;
+        padding: 15px 25px;
+        border-radius: 50px;
+        border: 1px solid #334155;
+      }
+
+      .info-icon {
+        width: 36px;
+        height: 36px;
+        background-color: #334155;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      .info-icon.blue {
+        color: #38bdf8;
+        background-color: rgba(56, 189, 248, 0.1);
+      }
+      .info-icon.orange {
+        color: #f97316;
+        background-color: rgba(249, 115, 22, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <div class="bg-dots"></div>
+      <!-- Header -->
+      <div class="header">
+        <div class="flex items-center mb-2">
+          <div class="h-1 w-10 bg-blue-400 mr-3"></div>
+          <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Cloud Storage &amp; Response</p>
+        </div>
+        <h1 class="text-4xl font-black text-white">클라우드 저장 <span class="text-gray-500 text-3xl font-light mx-2">&amp;</span> 응답 처리</h1>
+        <p class="text-gray-400 mt-2 text-lg">처리된 결과물의 안전한 저장과 신속한 피드백</p>
+      </div>
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Visual Process Flow -->
+        <div class="process-container">
+          <!-- 1. Source Images -->
+          <div class="source-zone">
+            <div class="image-stack">
+              <div class="img-card"><i class="fas fa-image text-3xl text-gray-400"></i></div>
+              <div class="img-card"><i class="fas fa-image text-3xl text-gray-400"></i></div>
+              <div class="img-card"><i class="fas fa-image text-3xl text-gray-400"></i></div>
+            </div>
+            <p class="zone-label">처리 완료 이미지들</p>
+          </div>
+          <!-- 2. Parallel Upload Pipeline -->
+          <div class="pipeline-zone">
+            <div class="concurrent-badge mb-4"><i class="fas fa-bolt mr-2"></i>최대 10개 동시 업로드</div>
+            <div class="upload-paths">
+              <div class="path-line"><div class="moving-packet"></div></div>
+              <div class="path-line"><div class="moving-packet"></div></div>
+              <div class="path-line"><div class="moving-packet"></div></div>
+              <div class="path-line"><div class="moving-packet"></div></div>
+              <div class="path-line"><div class="moving-packet"></div></div>
+            </div>
+            <p class="text-xs text-blue-300 mt-2 font-mono">Parallel S3 Upload</p>
+          </div>
+          <!-- 3. S3 Bucket -->
+          <div class="storage-zone">
+            <div class="bucket-icon">
+              <i class="fas fa-bucket"></i>
+              <i class="fas fa-cloud absolute text-2xl text-white opacity-80" style="top: 35px"></i>
+            </div>
+            <div class="bucket-label">AWS S3 Bucket</div>
+            <p class="zone-label">클라우드 저장소</p>
+          </div>
+          <!-- Connector -->
+          <div class="connector-arrow">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <!-- 4. Response -->
+          <div class="response-zone">
+            <!-- Success Case -->
+            <div class="response-card success">
+              <div class="res-header">
+                <span class="res-title text-green-400"><i class="fas fa-check-circle"></i> 성공 (Success)</span>
+                <span class="text-xs text-gray-500">HTTP 200</span>
+              </div>
+              <div class="code-block">
+                <span class="key-text">"status":</span> <span class="success-text">"completed"</span>,<br />
+                <span class="key-text">"urls":</span> [<br />
+                <span class="string-text">"https://s3.../img1.jpg"</span>,<br />
+                <span class="string-text">"https://s3.../img2.jpg"</span><br />
+                ]
+              </div>
+            </div>
+            <!-- Failure Case -->
+            <div class="response-card fail">
+              <div class="res-header">
+                <span class="res-title text-red-400"><i class="fas fa-exclamation-circle"></i> 실패 (Failure)</span>
+                <span class="text-xs text-gray-500">HTTP 500</span>
+              </div>
+              <div class="code-block">
+                <span class="key-text">"status":</span> <span class="error-text">"failed"</span>,<br />
+                <span class="key-text">"error":</span> <span class="string-text">"Upload timeout"</span>,<br />
+                <span class="key-text">"retry":</span> <span class="success-text">true</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom Info -->
+        <div class="info-footer">
+          <div class="info-item">
+            <div class="info-icon blue"><i class="fas fa-tachometer-alt"></i></div>
+            <div>
+              <p class="text-xs text-gray-400 font-bold uppercase">Speed</p>
+              <p class="text-white text-sm">병렬 업로드로 대기 시간 최소화</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon orange"><i class="fas fa-server"></i></div>
+            <div>
+              <p class="text-xs text-gray-400 font-bold uppercase">Reliability</p>
+              <p class="text-white text-sm">성공/실패 여부를 명확히 반환</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.body.addEventListener('click', () => {
+        window.location.href = '9.html';
+      });
+    </script>
+  </body>
+</html>
