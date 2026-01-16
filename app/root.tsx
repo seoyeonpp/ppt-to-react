@@ -1,11 +1,37 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import { Ssgoi } from '@ssgoi/react'
-import { film } from '@ssgoi/react/view-transitions'
+import { film, hero } from '@ssgoi/react/view-transitions'
 import type { Route } from './+types/root'
 import './styles/global.css'
 
 const ssgoiConfig = {
   defaultTransition: film(),
+  transitions: [
+    {
+      from: '/slide-2',
+      to: '/slide-3',
+      transition: hero(),
+      symmetric: true,
+    },
+    {
+      from: '/slide-3',
+      to: '/slide-2',
+      transition: hero(),
+      symmetric: true,
+    },
+    {
+      from: '/slide-2',
+      to: '/slide-4',
+      transition: hero(),
+      symmetric: true,
+    },
+    {
+      from: '/slide-4',
+      to: '/slide-2',
+      transition: hero(),
+      symmetric: true,
+    },
+  ],
 }
 
 export const links: Route.LinksFunction = () => [
