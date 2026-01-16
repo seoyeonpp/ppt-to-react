@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { BackgroundGrid } from "~/components/BackgroundGrid";
 
@@ -7,6 +8,7 @@ export function meta() {
 
 export default function WrapUpSlide() {
   return (
+    <SsgoiTransition id="/slide-9">
     <SlideContainer nextSlide="/">
       {/* Background */}
       <div
@@ -109,5 +111,6 @@ export default function WrapUpSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

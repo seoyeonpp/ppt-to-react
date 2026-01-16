@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { SlideHeader } from "~/components/SlideHeader";
 import { BackgroundDots } from "~/components/BackgroundGrid";
@@ -8,6 +9,7 @@ export function meta() {
 
 export default function CloudStorageSlide() {
   return (
+    <SsgoiTransition id="/slide-8">
     <SlideContainer nextSlide="/slide-9">
       <BackgroundDots />
 
@@ -135,5 +137,6 @@ export default function CloudStorageSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

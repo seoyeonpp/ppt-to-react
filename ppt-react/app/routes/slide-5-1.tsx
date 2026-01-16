@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { SlideHeader } from "~/components/SlideHeader";
 import { BackgroundGrid } from "~/components/BackgroundGrid";
@@ -55,6 +56,7 @@ const reasons = [
 
 export default function WhyRabbitMQSlide() {
   return (
+    <SsgoiTransition id="/slide-5-1">
     <SlideContainer nextSlide="/slide-5-2">
       <BackgroundGrid />
 
@@ -95,5 +97,6 @@ export default function WhyRabbitMQSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

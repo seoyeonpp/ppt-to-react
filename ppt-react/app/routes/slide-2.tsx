@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { SlideHeader } from "~/components/SlideHeader";
 import { BackgroundGrid } from "~/components/BackgroundGrid";
@@ -23,6 +24,7 @@ const metrics = [
 
 export default function FlowOverviewSlide() {
   return (
+    <SsgoiTransition id="/slide-2">
     <SlideContainer nextSlide="/slide-3">
       <BackgroundGrid />
 
@@ -87,5 +89,6 @@ export default function FlowOverviewSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

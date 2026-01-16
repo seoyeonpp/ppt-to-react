@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router";
+import { SsgoiTransition } from "@ssgoi/react";
 import { BackgroundGrid } from "~/components/BackgroundGrid";
 
 export function meta() {
@@ -23,6 +24,7 @@ export default function QueueVsStackSlide() {
   }, [clickCount, showConclusion, navigate]);
 
   return (
+    <SsgoiTransition id="/slide-4">
     <div className="slide-container cursor-pointer" onClick={handleClick}>
       <BackgroundGrid />
 
@@ -151,5 +153,6 @@ export default function QueueVsStackSlide() {
         <i className="fas fa-lightbulb mr-2"></i> 결론: 이미지 처리 순서를 보장하기 위해 '큐(Queue)'를 사용합니다.
       </div>
     </div>
+    </SsgoiTransition>
   );
 }

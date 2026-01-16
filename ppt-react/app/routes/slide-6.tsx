@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { SlideHeader } from "~/components/SlideHeader";
 import { BackgroundGrid } from "~/components/BackgroundGrid";
@@ -8,6 +9,7 @@ export function meta() {
 
 export default function ProcessingTimelineSlide() {
   return (
+    <SsgoiTransition id="/slide-6">
     <SlideContainer nextSlide="/slide-7">
       <BackgroundGrid />
 
@@ -119,5 +121,6 @@ export default function ProcessingTimelineSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

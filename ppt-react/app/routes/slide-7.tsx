@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { SlideHeader } from "~/components/SlideHeader";
 import { BackgroundPattern } from "~/components/BackgroundGrid";
@@ -8,6 +9,7 @@ export function meta() {
 
 export default function ParallelProcessingSlide() {
   return (
+    <SsgoiTransition id="/slide-7">
     <SlideContainer nextSlide="/slide-8">
       <BackgroundPattern />
 
@@ -160,5 +162,6 @@ export default function ParallelProcessingSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

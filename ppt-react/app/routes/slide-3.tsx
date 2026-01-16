@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 import { SlideHeader } from "~/components/SlideHeader";
 import { BackgroundGrid } from "~/components/BackgroundGrid";
@@ -8,6 +9,7 @@ export function meta() {
 
 export default function TaskRequestSlide() {
   return (
+    <SsgoiTransition id="/slide-3">
     <SlideContainer nextSlide="/slide-4">
       <BackgroundGrid />
 
@@ -121,5 +123,6 @@ export default function TaskRequestSlide() {
         </div>
       </div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }

@@ -1,3 +1,4 @@
+import { SsgoiTransition } from "@ssgoi/react";
 import { SlideContainer } from "~/components/SlideContainer";
 
 export function meta() {
@@ -6,6 +7,7 @@ export function meta() {
 
 export default function CoverSlide() {
   return (
+    <SsgoiTransition id="/">
     <SlideContainer nextSlide="/slide-2">
       {/* Background Decorations */}
       <div className="deco-grid"></div>
@@ -73,5 +75,6 @@ export default function CoverSlide() {
       {/* Footer Bar */}
       <div className="bottom-bar"></div>
     </SlideContainer>
+    </SsgoiTransition>
   );
 }
