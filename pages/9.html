@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Summary and Metrics</title>
+    <title>Wrap Up</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
@@ -26,326 +26,327 @@
         background-color: #0f172a;
       }
 
-      /* Background Pattern */
+      /* Background */
       .bg-pattern {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
-        background-size: 50px 50px;
+        background-image: radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+        z-index: 0;
+      }
+
+      .bg-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0.1;
         z-index: 0;
       }
 
       .header {
-        padding: 30px 60px 10px 60px;
+        padding: 30px 60px 15px 60px;
         z-index: 10;
       }
 
       .main-content {
         flex: 1;
         display: flex;
-        padding: 20px 60px 50px 60px;
+        flex-direction: column;
+        padding: 10px 60px 40px 60px;
         z-index: 10;
-        gap: 50px;
-      }
-
-      /* Left Panel: Metrics */
-      .metrics-panel {
-        flex: 0.45;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        justify-content: center;
-      }
-
-      .metric-card {
-        background-color: #1e293b;
-        border-radius: 16px;
-        padding: 25px;
-        display: flex;
-        align-items: center;
-        border: 1px solid #334155;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease;
-      }
-
-      .metric-card:hover {
-        transform: translateX(5px);
-        border-color: #475569;
-      }
-
-      .metric-card::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 6px;
-      }
-
-      .metric-card.blue::before {
-        background-color: #38bdf8;
-      }
-      .metric-card.amber::before {
-        background-color: #f59e0b;
-      }
-      .metric-card.purple::before {
-        background-color: #a855f7;
-      }
-
-      .metric-icon-box {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        margin-right: 25px;
-        flex-shrink: 0;
-      }
-
-      .blue .metric-icon-box {
-        background-color: rgba(56, 189, 248, 0.1);
-        color: #38bdf8;
-      }
-      .amber .metric-icon-box {
-        background-color: rgba(245, 158, 11, 0.1);
-        color: #f59e0b;
-      }
-      .purple .metric-icon-box {
-        background-color: rgba(168, 85, 247, 0.1);
-        color: #a855f7;
-      }
-
-      .metric-content {
-        flex: 1;
-      }
-
-      .metric-value {
-        font-size: 36px;
-        font-weight: 900;
-        line-height: 1;
-        margin-bottom: 5px;
-      }
-
-      .blue .metric-value {
-        color: #38bdf8;
-      }
-      .amber .metric-value {
-        color: #f59e0b;
-      }
-      .purple .metric-value {
-        color: #a855f7;
-      }
-
-      .metric-label {
-        font-size: 14px;
-        color: #94a3b8;
-        font-weight: 500;
-      }
-
-      .metric-sub {
-        font-size: 12px;
-        color: #64748b;
-        margin-top: 4px;
-      }
-
-      /* Right Panel: Benefits */
-      .benefits-panel {
-        flex: 0.55;
-        background-color: rgba(30, 41, 59, 0.4);
-        border-radius: 20px;
-        border: 1px solid #334155;
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-
-      .panel-heading {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 30px;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid #334155;
-        padding-bottom: 20px;
-      }
-
-      .benefits-list {
-        display: flex;
-        flex-direction: column;
         gap: 25px;
       }
 
-      .benefit-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 20px;
+      /* 한 줄 요약 박스 */
+      .summary-box {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 20px;
+        padding: 30px 40px;
+        text-align: center;
+        position: relative;
       }
 
-      .check-icon {
-        width: 32px;
-        height: 32px;
-        background-color: #0f172a;
-        border: 2px solid #10b981;
-        color: #10b981;
+      .summary-box::before {
+        content: '"';
+        position: absolute;
+        top: 10px;
+        left: 30px;
+        font-size: 60px;
+        color: rgba(56, 189, 248, 0.3);
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .summary-text {
+        font-size: 26px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.5;
+      }
+
+      .summary-text .highlight {
+        color: #38bdf8;
+      }
+
+      /* 기억할 3가지 */
+      .remember-section {
+        display: flex;
+        gap: 25px;
+      }
+
+      .remember-card {
+        flex: 1;
+        background-color: #1e293b;
+        border-radius: 16px;
+        border: 1px solid #334155;
+        padding: 25px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .remember-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+      }
+
+      .remember-card:nth-child(1)::before {
+        background-color: #38bdf8;
+      }
+      .remember-card:nth-child(2)::before {
+        background-color: #10b981;
+      }
+      .remember-card:nth-child(3)::before {
+        background-color: #f59e0b;
+      }
+
+      .remember-num {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-shrink: 0;
-        font-size: 14px;
-        margin-top: 2px;
-      }
-
-      .benefit-text h4 {
-        margin: 0 0 5px 0;
         font-size: 18px;
-        font-weight: 700;
-        color: #e2e8f0;
+        font-weight: 800;
+        margin: 0 auto 15px;
       }
 
-      .benefit-text p {
-        margin: 0;
-        font-size: 15px;
-        color: #94a3b8;
-        line-height: 1.5;
-      }
-
-      /* Highlight tags in benefits */
-      .tag {
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 4px;
-        margin-left: 8px;
-        vertical-align: middle;
-        font-weight: 600;
-        text-transform: uppercase;
-      }
-
-      .tag-speed {
-        background-color: rgba(245, 158, 11, 0.2);
-        color: #f59e0b;
-      }
-      .tag-stable {
+      .remember-card:nth-child(1) .remember-num {
         background-color: rgba(56, 189, 248, 0.2);
         color: #38bdf8;
       }
-      .tag-quality {
-        background-color: rgba(168, 85, 247, 0.2);
-        color: #a855f7;
-      }
-      .tag-clear {
+      .remember-card:nth-child(2) .remember-num {
         background-color: rgba(16, 185, 129, 0.2);
         color: #10b981;
+      }
+      .remember-card:nth-child(3) .remember-num {
+        background-color: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+      }
+
+      .remember-icon {
+        font-size: 36px;
+        margin-bottom: 15px;
+      }
+
+      .remember-card:nth-child(1) .remember-icon {
+        color: #38bdf8;
+      }
+      .remember-card:nth-child(2) .remember-icon {
+        color: #10b981;
+      }
+      .remember-card:nth-child(3) .remember-icon {
+        color: #f59e0b;
+      }
+
+      .remember-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 10px;
+      }
+
+      .remember-desc {
+        font-size: 14px;
+        color: #94a3b8;
+        line-height: 1.6;
+      }
+
+      /* 하단 메시지 */
+      .bottom-section {
+        display: flex;
+        gap: 30px;
+        align-items: stretch;
+      }
+
+      /* 체감 변화 */
+      .change-box {
+        flex: 1;
+        background-color: rgba(30, 41, 59, 0.5);
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 25px;
+      }
+
+      .change-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #e2e8f0;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .change-title i {
+        color: #10b981;
+      }
+
+      .change-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .change-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 14px;
+      }
+
+      .change-before {
+        color: #64748b;
+        text-decoration: line-through;
+        min-width: 140px;
+      }
+
+      .change-arrow {
+        color: #10b981;
+        font-size: 16px;
+      }
+
+      .change-after {
+        color: #10b981;
+        font-weight: 600;
+      }
+
+      /* Q&A 박스 */
+      .qa-box {
+        flex: 0.8;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 2px solid #38bdf8;
+        border-radius: 16px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .qa-icon {
+        font-size: 40px;
+        color: #38bdf8;
+        margin-bottom: 15px;
+      }
+
+      .qa-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+
+      .qa-subtitle {
+        font-size: 14px;
+        color: #94a3b8;
+      }
+
+      .thank-text {
+        margin-top: 15px;
+        font-size: 16px;
+        color: #64748b;
       }
     </style>
   </head>
   <body>
     <div class="slide-container">
       <div class="bg-pattern"></div>
+      <div class="bg-grid"></div>
+
       <!-- Header -->
       <div class="header">
         <div class="flex items-center mb-2">
           <div class="h-1 w-10 bg-blue-400 mr-3"></div>
-          <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Summary &amp; Metrics</p>
+          <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Wrap Up</p>
         </div>
-        <h1 class="text-4xl font-black text-white">핵심 요약 <span class="text-gray-500 text-3xl font-light mx-2">&amp;</span> 시스템 장점</h1>
-        <p class="text-gray-400 mt-2 text-lg">주요 성능 지표와 도입 효과 정리</p>
+        <h1 class="text-4xl font-black text-white">정리하면 <span class="text-blue-400">이것만 기억하세요</span></h1>
       </div>
+
       <!-- Main Content -->
       <div class="main-content">
-        <!-- Left: Key Metrics -->
-        <div class="metrics-panel">
-          <!-- Metric 1 -->
-          <div class="metric-card blue">
-            <div class="metric-icon-box">
-              <i class="fas fa-hand-holding"></i>
-            </div>
-            <div class="metric-content">
-              <div class="metric-value">1 <span class="text-xl font-normal text-gray-400">task</span></div>
-              <p class="metric-label">대기열 처리 단위</p>
-              <p class="metric-sub">Prefetch Count: 1 (안정성)</p>
-            </div>
-          </div>
-          <!-- Metric 2 -->
-          <div class="metric-card amber">
-            <div class="metric-icon-box">
-              <i class="fas fa-layer-group"></i>
-            </div>
-            <div class="metric-content">
-              <div class="metric-value">Max 10 <span class="text-xl font-normal text-gray-400">ea</span></div>
-              <p class="metric-label">Resize 동시 처리 &amp; 업로드</p>
-              <p class="metric-sub">Multi-threading (속도)</p>
-            </div>
-          </div>
-          <!-- Metric 3 -->
-          <div class="metric-card purple">
-            <div class="metric-icon-box">
-              <i class="fas fa-arrow-down-short-wide"></i>
-            </div>
-            <div class="metric-content">
-              <div class="metric-value text-2xl">Sequential</div>
-              <p class="metric-label">AI 생성 처리 방식</p>
-              <p class="metric-sub">유형별 최적화 (Front → Model)</p>
-            </div>
-          </div>
+        <!-- 한 줄 요약 -->
+        <div class="summary-box">
+          <p class="summary-text">
+            버튼 클릭 한 번이면, 뒤에서 <span class="highlight">AI가 알아서</span> 이미지를 만들고<br />
+            <span class="highlight">클라우드에 저장</span>한 뒤, 완료되면 <span class="highlight">결과를 알려줍니다</span>
+          </p>
         </div>
-        <!-- Right: System Benefits -->
-        <div class="benefits-panel">
-          <div class="panel-heading">
-            <i class="fas fa-clipboard-check text-green-400"></i>
-            <span>System Benefits</span>
+
+        <!-- 기억할 3가지 -->
+        <div class="remember-section">
+          <div class="remember-card">
+            <div class="remember-num">1</div>
+            <div class="remember-icon"><i class="fas fa-clock"></i></div>
+            <h3 class="remember-title">기다릴 필요 없어요</h3>
+            <p class="remember-desc">
+              요청하면 바로 "접수 완료"<br />
+              처리는 백그라운드에서 진행되고<br />
+              완료되면 이미지가 변경됩니다.
+            </p>
           </div>
-          <div class="benefits-list">
-            <!-- Benefit 1 -->
-            <div class="benefit-item">
-              <div class="check-icon"><i class="fas fa-check"></i></div>
-              <div class="benefit-text">
-                <h4>빠른 처리 속도 <span class="tag tag-speed">Speed</span></h4>
-                <p>이미지 리사이징과 S3 업로드를 병렬로 처리하여 사용자 대기 시간을 획기적으로 단축합니다.</p>
-              </div>
-            </div>
-            <!-- Benefit 2 -->
-            <div class="benefit-item">
-              <div class="check-icon"><i class="fas fa-check"></i></div>
-              <div class="benefit-text">
-                <h4>작업 순서 보장 <span class="tag tag-stable">Stability</span></h4>
-                <p>대기열(Queue) 시스템을 도입하여 먼저 요청한 작업이 먼저 처리되는 공정성을 확보했습니다.</p>
-              </div>
-            </div>
-            <!-- Benefit 3 -->
-            <div class="benefit-item">
-              <div class="check-icon"><i class="fas fa-check"></i></div>
-              <div class="benefit-text">
-                <h4>고품질 결과물 <span class="tag tag-quality">Quality</span></h4>
-                <p>이미지 유형(다림질/모델)에 따라 Flux, Gemini 등 최적의 AI 모델을 선별적으로 적용합니다.</p>
-              </div>
-            </div>
-            <!-- Benefit 4 -->
-            <div class="benefit-item">
-              <div class="check-icon"><i class="fas fa-check"></i></div>
-              <div class="benefit-text">
-                <h4>명확한 피드백 <span class="tag tag-clear">Clarity</span></h4>
-                <p>성공 시 URL 목록, 실패 시 구체적인 에러 메시지를 반환하여 운영 대응이 용이합니다.</p>
-              </div>
-            </div>
+
+          <div class="remember-card">
+            <div class="remember-num">2</div>
+            <div class="remember-icon"><i class="fas fa-list-ol"></i></div>
+            <h3 class="remember-title">순서대로 처리돼요</h3>
+            <p class="remember-desc">
+              은행 번호표처럼<br />
+              먼저 요청한 작업이<br />
+              먼저 처리됩니다
+            </p>
+          </div>
+
+          <div class="remember-card">
+            <div class="remember-num">3</div>
+            <div class="remember-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3 class="remember-title">실패해도 안전해요</h3>
+            <p class="remember-desc">
+              중간에 문제가 생겨도<br />
+              작업이 사라지지 않고<br />
+              자동으로 다시 시도합니다
+            </p>
           </div>
         </div>
       </div>
     </div>
     <script>
       document.body.addEventListener('click', () => {
-        window.location.href = '1.html';
-      });
+        window.location.href = '1.html'
+      })
     </script>
   </body>
 </html>

@@ -79,12 +79,22 @@
         position: absolute;
         top: 50%;
         left: 100px;
-        width: 60%;
+        width: 0%;
         height: 4px;
         background-color: #38bdf8;
         z-index: 1;
         transform: translateY(-50%);
         box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        animation: progress-fill 10s ease-out forwards;
+      }
+
+      @keyframes progress-fill {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 60%;
+        }
       }
 
       /* Step Nodes */
@@ -379,8 +389,8 @@
     </div>
     <script>
       document.body.addEventListener('click', () => {
-        window.location.href = '7.html';
-      });
+        window.location.href = '7.html'
+      })
     </script>
   </body>
 </html>
